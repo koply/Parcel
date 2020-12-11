@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.karpuzdev</groupId>
+    <artifactId>parcel-root</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+
+    <scm>
+        <connection>scm:git:git://github.com/MusaBrt/Parcel.git</connection>
+        <developerConnection>scm:git:ssh://github.com/MusaBrt/Parcel.git</developerConnection>
+        <url>https://github.com/MusaBrt/Parcel</url>
+    </scm>
+    <modules>
+        <module>core</module>
+        <module>bionic</module>
+        <module>main</module>
+    </modules>
+
+    <name>Parcel</name>
+    <description>Awesome thing.</description>
+    <url>https://github.com/MusaBrt/Parcel</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+</project>
