@@ -1,6 +1,7 @@
 package com.karpuzdev.parcel;
 
 import com.karpuzdev.parcel.commands.HelpCommand;
+import com.karpuzdev.parcel.internal.IParcel;
 import me.koply.kcommando.CommandToRun;
 import me.koply.kcommando.KCommando;
 import me.koply.kcommando.integration.impl.jda.JDAIntegration;
@@ -10,14 +11,21 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.SelfUser;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main extends JDAIntegration {
+public class Main extends JDAIntegration implements IParcel {
 
     public Main(JDA jda) {
         super(jda);
+        Core.build(this);
+    }
+
+    @Override
+    public File[] getParcels() {
+        return new File("parcels/").listFiles();
     }
 
     private static final EmbedBuilder helpEmbed = new EmbedBuilder();
@@ -52,6 +60,7 @@ public class Main extends JDAIntegration {
             set.add(entry.getValue());
         }
         helpEmbed.addField("❯ Komutlar", sb.toString(), false)
-                .setFooter(self.getName() + " by koply", self.getAvatarUrl());
+                .setFooter(self.getName() + " by karpuz", self.getAvatarUrl());
     }
+
 }

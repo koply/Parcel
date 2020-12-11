@@ -25,5 +25,10 @@
             <artifactId>Botanic</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.karpuzdev</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

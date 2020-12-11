@@ -33,6 +33,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.karpuzdev</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>4.2.0_209</version>
