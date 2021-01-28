@@ -38,6 +38,8 @@ public final class FileUtil {
             byte[] content = new byte[(int)file.length()];
             int _bytesRead = input.read(content);
 
+            input.close();
+
             return content;
 
         } catch (IOException e) {
