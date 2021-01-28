@@ -1,17 +1,17 @@
 package com.karpuzdev.parcel.bionic;
 
-import com.karpuzdev.parcel.Core;
-import com.karpuzdev.parcel.internal.IParcel;
+import com.karpuzdev.parcel.lang.ParcelAPI;
+import com.karpuzdev.parcel.lang.internal.IParcelSource;
 import me.koply.botanic.bionic.java.Bionic;
 
 import java.io.File;
 
-public class BionicMain extends Bionic implements IParcel {
+public class BionicMain extends Bionic implements IParcelSource {
 
     @Override
     public void onEnable() {
         System.out.println("Hello World!");
-        Core.build(this);
+        ParcelAPI.build(this);
     }
 
     @Override

@@ -1,7 +1,8 @@
-package com.karpuzdev.parcel;
+package com.karpuzdev.parcel.main;
 
-import com.karpuzdev.parcel.commands.HelpCommand;
-import com.karpuzdev.parcel.internal.IParcel;
+import com.karpuzdev.parcel.lang.ParcelAPI;
+import com.karpuzdev.parcel.main.commands.HelpCommand;
+import com.karpuzdev.parcel.lang.internal.IParcelSource;
 import me.koply.kcommando.CommandToRun;
 import me.koply.kcommando.KCommando;
 import me.koply.kcommando.integration.impl.jda.JDAIntegration;
@@ -16,11 +17,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main extends JDAIntegration implements IParcel {
+public class Main extends JDAIntegration implements IParcelSource {
 
     public Main(JDA jda) {
         super(jda);
-        Core.build(this);
+        ParcelAPI.build(this);
     }
 
     @Override

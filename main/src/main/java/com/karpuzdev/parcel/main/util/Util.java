@@ -1,4 +1,4 @@
-package com.karpuzdev.parcel.util;
+package com.karpuzdev.parcel.main.util;
 
 import java.awt.*;
 import java.util.Random;
@@ -10,5 +10,4 @@ public final class Util {
     public static Color randomColor() {
         return new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255));
     }
-
 }

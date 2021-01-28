@@ -1,0 +1,28 @@
+KMN
+0
+OnCommand "!ping"
+    Equals %channel.name% "botkomut"
+        RespondText "Pong!"
+    Else
+        SendText "Got a Message!" "botkomut"
+
+###
+Tiles will start with "KMN" bytes and a version specifier of 1 byte
+Every expression has to start with 2 expression identifier bytes.
+All parameters has to be in a group. All groups start with group-start-byte and end with group-end-byte.
+First byte of groups is always an identifier-byte for the content. (group-start itself might determine the content type)
+Strings always end with null terminator
+Code blocks always start with the block-start-byte and end with block-end-byte.
+Block-starter expression types always contain the block-end-byte position as the first parameter (after the line number parameter)
+All entry points must be an event expression. (also might be a function)
+Every expression must have a line number as the first parameter
+
+Expression identifiers are written with names
+Block end is }
+String group identifier is "
+Null-terminator is -
+Property identifier is ~
+Properties are written with their names
+Block-end-byte position is denoted by \
+
+KMN0OnCommand1-\-!ping-Equals2-\-~channel.name"botkomut-RespondText3-"Pong!-Else4-\-SendText5-"Got a message!-"botkomut-}

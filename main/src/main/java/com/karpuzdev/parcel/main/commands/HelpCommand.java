@@ -1,7 +1,7 @@
-package com.karpuzdev.parcel.commands;
+package com.karpuzdev.parcel.main.commands;
 
-import com.karpuzdev.parcel.Main;
-import com.karpuzdev.parcel.util.Util;
+import com.karpuzdev.parcel.main.Main;
+import com.karpuzdev.parcel.main.util.Util;
 import me.koply.kcommando.integration.impl.jda.JDACommand;
 import me.koply.kcommando.internal.Commando;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
