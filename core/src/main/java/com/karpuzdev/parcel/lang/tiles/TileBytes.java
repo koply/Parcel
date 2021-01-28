@@ -44,6 +44,8 @@ public final class TileBytes {
      */
     public static final short ARGUMENT_PROPERTY = 0x0003;
 
+
+
     /**
      * "Command" denotes the fact that a message is sent by the intention
      * of being a command. E.g. bot messages do not count as a command.
@@ -93,5 +95,12 @@ public final class TileBytes {
      * @parameter String - Message text
      */
     public static final short RESPONDTEXT_ACTION = 0x0200;
+
+
+    /**
+     * This action stops the current code execution.
+     * Return is always added at the end of events and functions to end the block.
+     */
+    public static final short RETURN_ACTION = 0x0300;
 
 }
