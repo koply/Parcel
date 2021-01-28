@@ -1,5 +1,5 @@
-on command "!ping":
-    if channel.name is "botkomut":
+on command "ping"
+    if channel.name is "botkomut"
         respond with text "Pong!"
     else:
         send text "Got a Message!" to channel "botkomut"

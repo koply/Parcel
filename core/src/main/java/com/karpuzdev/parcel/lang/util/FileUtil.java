@@ -2,8 +2,11 @@ package com.karpuzdev.parcel.lang.util;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public final class FileUtil {
+
+    private FileUtil() { }
 
     public static String getFileExtension(File file) {
         String name = file.getName();
@@ -32,13 +35,10 @@ public final class FileUtil {
     }
 
     public static byte[] readFileBytes(File file) {
-        try {
-            FileInputStream input = new FileInputStream(file);
+        try (FileInputStream input = new FileInputStream(file)) {
 
-            byte[] content = new byte[(int)file.length()];
+            byte[] content = new byte[(int) file.length()];
             int _bytesRead = input.read(content);
-
-            input.close();
 
             return content;
 
@@ -47,7 +47,37 @@ public final class FileUtil {
 
             return new byte[0];
         }
+    }
 
+    public static void writeFile(File file, String content) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+
+            writer.write(content);
+            writer.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeFileBytes(File file, byte[] bytes) {
+        try (FileOutputStream output = new FileOutputStream(file)) {
+
+            output.write(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeFileBytes(File file, List<Byte> bytes) {
+        byte[] arr = new byte[bytes.size()];
+
+        for (int i = 0; i < bytes.size(); i++) {
+            arr[i] = bytes.get(i);
+        }
+
+        writeFileBytes(file, arr);
     }
 
 }
