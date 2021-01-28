@@ -16,6 +16,7 @@ All entry points must be an event expression. (also might be a function)
 Every expression must have a line number as the first parameter
 A "Return" expression will always be added at the end of events and functions
 
+*Visual Example*
 Expression identifiers are written with names
 String group identifier is "
 Null-terminator is -
