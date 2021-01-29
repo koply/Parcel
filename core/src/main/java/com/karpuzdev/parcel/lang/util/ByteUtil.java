@@ -2,7 +2,6 @@ package com.karpuzdev.parcel.lang.util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ByteUtil {
@@ -38,9 +37,26 @@ public class ByteUtil {
     }
 
     public static List<Byte> split(short arg) {
-        return Arrays.asList((byte) (arg >> 8), (byte) arg);
+        List<Byte> list = new ArrayList<>(4);
+        list.add((byte) (arg >> 8));
+        list.add((byte) arg);
+
+        return list;
     }
 
+    public static List<Byte> splitTrim(long arg) {
+        return trimBytes(split(arg));
+    }
+
+    public static List<Byte> splitTrim(int arg) {
+        return trimBytes(split(arg));
+    }
+
+    public static List<Byte> splitTrim(short arg) {
+        return trimBytes(split(arg));
+    }
+
+    // You know... I fucking hate the "every number is signed" bullshit in Java
     public static String toPrettyString(List<Byte> list) {
         StringBuilder strBuilder = new StringBuilder();
 
@@ -49,10 +65,27 @@ public class ByteUtil {
             if (!start) strBuilder.append(" ");
             else start = false;
 
-            strBuilder.append(Integer.toHexString(b));
+            String hex = Integer.toHexString(Byte.toUnsignedInt(b));
+            if (hex.length() == 1) hex = "0" + hex;
+
+            strBuilder.append(hex);
         }
 
         return strBuilder.toString();
+    }
+
+    public static List<Byte> trimBytes(List<Byte> bytes) {
+        List<Byte> trimmed = new ArrayList<>(bytes.size());
+
+        boolean trimming = true;
+        for (byte b : bytes) {
+            if (b != 0) trimming = false;
+            if (trimming) continue;
+
+            trimmed.add(b);
+        }
+
+        return trimmed;
     }
 
 }

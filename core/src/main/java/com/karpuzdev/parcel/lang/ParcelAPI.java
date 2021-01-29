@@ -1,12 +1,21 @@
 package com.karpuzdev.parcel.lang;
 
+import com.karpuzdev.parcel.lang.expressions.OnCommandExpression;
+import com.karpuzdev.parcel.lang.expressions.RespondTextExpression;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
+import com.karpuzdev.parcel.lang.util.ByteUtil;
 
 import java.io.File;
+import java.util.List;
 
 // user-written files are "parcel"s
 // compiled pieces are "tile"s
 public final class ParcelAPI {
+
+    static {
+        ExpressionMatcher.registerExpression(new OnCommandExpression());
+        ExpressionMatcher.registerExpression(new RespondTextExpression());
+    }
 
     /*  Static build method to launch the core  */
     public static void build(IParcelSource source, File outputFolder) {
@@ -19,6 +28,16 @@ public final class ParcelAPI {
         File[] parcels = source.getParcels();
 
         ParcelCompiler.compileAll(parcels, outputFolder);
+    }
+
+    public static String compileCodeToString(String code) {
+        List<Byte> bytes = ParcelCompiler.compileCode(code, "test.parcel");
+
+        return ByteUtil.toPrettyString(bytes);
+    }
+
+    public static void compileCodeToFile(String code, File outputFolder) {
+        ParcelCompiler.compileCode(code, "test.parcel", outputFolder);
     }
 
 }
