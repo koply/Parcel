@@ -13,17 +13,21 @@ public class Test {
 //                "\telse:\n" +
 //                "\t\tsend text \"Got a Message!\" to channel \"botkomut\"";
         String code =
-                "on command \"ping\"\n" +
-                "\trespond with text \"Pong!\"\n\n" +
-                "on command \"help\"\n" +
-                "\trespond with text \"Help!\"\n";
+                    "on command \"ping\"\n" +
+                    "\trespond with text \"Pong!\"\n\n" +
+                    "\trespond with text \"Pongo!\"\n" +
+                    "on command \"help\"\n\n" +
+                    "\trespond with text \"Help!\"\n";
 
         File outputFolder = new File("D:\\tmp\\tiletest");
         if (!outputFolder.exists()) {
             outputFolder.mkdir();
         }
 //        System.out.println(ParcelAPI.compileCodeToFile(code, outputFolder));
-        ParcelAPI.compileCodeToFile(code, outputFolder);
+//        ParcelAPI.compileCodeToFile(code, outputFolder);
+
+        File tile = new File(outputFolder, "test.tile");
+        ParcelAPI.debugTile(tile);
     }
 
 }

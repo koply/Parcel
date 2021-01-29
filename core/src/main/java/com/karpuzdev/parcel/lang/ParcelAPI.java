@@ -3,6 +3,7 @@ package com.karpuzdev.parcel.lang;
 import com.karpuzdev.parcel.lang.expressions.OnCommandExpression;
 import com.karpuzdev.parcel.lang.expressions.RespondTextExpression;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
+import com.karpuzdev.parcel.lang.tiles.scanners.OnCommandScanner;
 import com.karpuzdev.parcel.lang.util.ByteUtil;
 
 import java.io.File;
@@ -15,6 +16,8 @@ public final class ParcelAPI {
     static {
         ExpressionMatcher.registerExpression(new OnCommandExpression());
         ExpressionMatcher.registerExpression(new RespondTextExpression());
+
+        TileScanner.registerScanner(new OnCommandScanner());
     }
 
     /*  Static build method to launch the core  */
@@ -38,6 +41,15 @@ public final class ParcelAPI {
 
     public static void compileCodeToFile(String code, File outputFolder) {
         ParcelCompiler.compileCode(code, "test.parcel", outputFolder);
+    }
+
+    public static void loadTile(File file) {
+        TileLoader.load(file);
+    }
+
+    public static void debugTile(File file) {
+        loadTile(file);
+        TileScanner.debug();
     }
 
 }

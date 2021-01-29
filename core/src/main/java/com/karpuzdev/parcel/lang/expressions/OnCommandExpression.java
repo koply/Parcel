@@ -1,6 +1,7 @@
 package com.karpuzdev.parcel.lang.expressions;
 
-import com.karpuzdev.parcel.lang.expressions.helpers.CompileResult;
+import com.karpuzdev.parcel.lang.helpers.CompileInformation;
+import com.karpuzdev.parcel.lang.helpers.CompileResult;
 import com.karpuzdev.parcel.lang.tiles.TileBytes;
 import com.karpuzdev.parcel.lang.util.ByteUtil;
 
@@ -16,13 +17,13 @@ public final class OnCommandExpression extends TileExpression {
     }
 
     @Override
-    public CompileResult compile(String line, int lineNumber, String[] groups) {
+    public CompileResult compile(CompileInformation info, String[] groups) {
         List<Byte> bytes = new Vector<>(10, 10);
 
         bytes.addAll(ByteUtil.split(TileBytes.COMMAND_EVENT));
 
         // Line number parameter
-        bytes.addAll(ByteUtil.splitTrim(lineNumber));
+        bytes.addAll(ByteUtil.splitTrim(info.lineNumber));
         bytes.add(TileBytes.NULL_TERMINATOR);
 
         // Block end specifier
@@ -35,6 +36,10 @@ public final class OnCommandExpression extends TileExpression {
         bytes.addAll(ByteUtil.split(groups[0]));
         bytes.add(TileBytes.NULL_TERMINATOR);
 
-        return new CompileResult(blockEndSpecifierPosition, bytes);
+        List<Byte> trailerBytes = new Vector<>(10, 10);
+
+        trailerBytes.addAll(ByteUtil.split(TileBytes.RETURN_ACTION));
+
+        return new CompileResult(blockEndSpecifierPosition, bytes, trailerBytes);
     }
 }

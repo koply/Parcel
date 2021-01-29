@@ -1,11 +1,11 @@
 package com.karpuzdev.parcel.lang;
 
 import com.karpuzdev.parcel.lang.expressions.TileExpression;
-import com.karpuzdev.parcel.lang.expressions.helpers.CompileResult;
-import com.karpuzdev.parcel.lang.expressions.helpers.MatchResult;
+import com.karpuzdev.parcel.lang.helpers.CompileInformation;
+import com.karpuzdev.parcel.lang.helpers.CompileResult;
+import com.karpuzdev.parcel.lang.helpers.MatchResult;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,11 +45,11 @@ final class ExpressionMatcher {
         return null;
     }
 
-    static CompileResult compile(String line, int lineNumber) {
-        MatchResult result = match(line);
+    static CompileResult compile(CompileInformation info) {
+        MatchResult result = match(info.line);
         if (result == null) return null;
 
-        return result.expression.compile(line, lineNumber, result.groups);
+        return result.expression.compile(info, result.groups);
     }
 
 }

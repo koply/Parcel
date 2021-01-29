@@ -1,7 +1,8 @@
 package com.karpuzdev.parcel.lang;
 
 import com.karpuzdev.parcel.lang.exceptions.CompilationException;
-import com.karpuzdev.parcel.lang.expressions.helpers.CompileResult;
+import com.karpuzdev.parcel.lang.helpers.CompileInformation;
+import com.karpuzdev.parcel.lang.helpers.CompileResult;
 import com.karpuzdev.parcel.lang.tiles.TileBytes;
 import com.karpuzdev.parcel.lang.util.ByteUtil;
 import com.karpuzdev.parcel.lang.util.FileUtil;
@@ -61,7 +62,14 @@ final class ParcelCompiler {
     static List<Byte> compileCode(String code, String fileName) {
         List<Byte> bytes = new Vector<>(10, 10);
 
+        // All tiles start with 4 bytes
+        // First 3 bytes are KMN bytes
+        bytes.addAll(ByteUtil.splitTrim(TileBytes.TILE_HEADER));
+        // The 4th byte is the version specifier
+        bytes.add((byte) 0x00);
+
         Stack<Integer> blockEndSpecifiers = new Stack<>();
+        Stack<List<Byte>> trailerBytesStack = new Stack<>();
 
         int currentLevel = 0;
         boolean levelComplete = false;
@@ -69,10 +77,11 @@ final class ParcelCompiler {
         int lineNumber = 0;
 
         String[] lines = code.split("\n");
+
         for (String line : lines) {
             lineNumber++;
 
-            if (line.trim().isEmpty()) {
+            if (line.trim().isEmpty() || line.trim().startsWith("#")) {
                 continue;
             }
 
@@ -83,11 +92,7 @@ final class ParcelCompiler {
                 tabCount++;
             }
 
-            if (tabCount == 0 && currentLevel != 0 && !bytes.isEmpty()) {
-                bytes.addAll(ByteUtil.split(TileBytes.RETURN_ACTION));
-            }
-
-            if (Math.abs(currentLevel - tabCount) >= 2) {
+            if (tabCount - currentLevel >= 2) {
                 throw new CompilationException(fileName, lineNumber, "Invalid tab usage");
             }
 
@@ -97,24 +102,20 @@ final class ParcelCompiler {
 
             // A block has to have ended if we went down a level
             if (tabCount < currentLevel) {
-                if (blockEndSpecifiers.empty()) {
-                    throw new CompilationException(fileName, lineNumber, "A block ended without starting");
-                }
+                int shiftTabs = (currentLevel - tabCount);
 
-                int pos = blockEndSpecifiers.pop();
-
-                int currentByteCount = ByteUtil.splitTrim(bytes.size()).size();
-
-                while (true) {
-                    List<Byte> newBytes = ByteUtil.splitTrim(bytes.size() + currentByteCount);
-                    int newByteCount = newBytes.size();
-
-                    if (currentByteCount == newByteCount) {
-                        bytes.addAll(pos, newBytes);
-                        break;
+                while (shiftTabs > 0) {
+                    if (blockEndSpecifiers.empty() || trailerBytesStack.empty()) {
+                        throw new CompilationException(fileName, lineNumber, "A block ended without starting");
                     }
 
-                    currentByteCount = newByteCount;
+                    bytes.addAll(trailerBytesStack.pop());
+
+                    int pos = blockEndSpecifiers.pop();
+
+                    insertBlockEnd(bytes, pos);
+
+                    shiftTabs -= 1;
                 }
             }
 
@@ -124,7 +125,8 @@ final class ParcelCompiler {
                 currentLevel = tabCount;
             }
 
-            CompileResult result = ExpressionMatcher.compile(line.trim(), lineNumber);
+            CompileInformation info = new CompileInformation(line.trim(), lineNumber, bytes.size());
+            CompileResult result = ExpressionMatcher.compile(info);
             if (result == null) {
                 throw new CompilationException(fileName, lineNumber, "Could not understand expression");
             }
@@ -134,30 +136,41 @@ final class ParcelCompiler {
                 blockEndSpecifiers.push(bytes.size() + specifierPos);
             }
 
+            if (result.trailerBytes != null) {
+                trailerBytesStack.push(result.trailerBytes);
+            }
+
             bytes.addAll(result.bytes);
         }
 
-        bytes.addAll(ByteUtil.split(TileBytes.RETURN_ACTION));
+        while (!trailerBytesStack.empty()) {
+            List<Byte> trailers = trailerBytesStack.pop();
+            bytes.addAll(trailers);
+        }
 
-        if (!blockEndSpecifiers.empty()) {
+        while (!blockEndSpecifiers.empty()) {
             int pos = blockEndSpecifiers.pop();
 
-            int currentByteCount = ByteUtil.splitTrim(bytes.size()).size();
-
-            while (true) {
-                List<Byte> newBytes = ByteUtil.splitTrim(bytes.size() + currentByteCount);
-                int newByteCount = newBytes.size();
-
-                if (currentByteCount == newByteCount) {
-                    bytes.addAll(pos, newBytes);
-                    break;
-                }
-
-                currentByteCount = newByteCount;
-            }
+            insertBlockEnd(bytes, pos);
         }
 
         return bytes;
+    }
+
+    private static void insertBlockEnd(List<Byte> bytes, int pos) {
+        int currentByteCount = ByteUtil.splitTrim(bytes.size()).size();
+
+        while (true) {
+            List<Byte> newBytes = ByteUtil.splitTrim(bytes.size() + currentByteCount);
+            int newByteCount = newBytes.size();
+
+            if (currentByteCount == newByteCount) {
+                bytes.addAll(pos, newBytes);
+                break;
+            }
+
+            currentByteCount = newByteCount;
+        }
     }
 
 }

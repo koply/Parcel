@@ -1,8 +1,12 @@
 package com.karpuzdev.parcel.lang.util;
 
+import com.karpuzdev.parcel.lang.tiles.TileBytes;
+
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ByteUtil {
 
@@ -56,6 +60,66 @@ public class ByteUtil {
         return trimBytes(split(arg));
     }
 
+    public static long packNumberBytes(List<Byte> bytes) {
+        long packed = 0;
+
+        for (byte b : bytes) {
+            packed = (packed << 8) | b;
+        }
+
+        return packed;
+    }
+
+    public static BigInteger packBigNumberBytes(List<Byte> bytes) {
+        byte[] arr = new byte[bytes.size()];
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = bytes.get(i);
+        }
+
+        return new BigInteger(arr);
+    }
+
+    public static String packStringBytes(List<Byte> bytes) {
+        byte[] arr = new byte[bytes.size()];
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = bytes.get(i);
+        }
+
+        return new String(arr);
+    }
+
+    public static short packIdentifierBytes(List<Byte> bytes, int pos) {
+        byte b1 = bytes.get(pos);
+        byte b2 = bytes.get(pos+1);
+
+        return (short) ((b1 << 8) | b2);
+    }
+
+    public static long packNumberBytes(List<Byte> bytes, int pos) {
+        return packNumberBytes(bufferUntilNull(bytes, pos));
+    }
+
+    public static BigInteger packBigNumberBytes(List<Byte> bytes, int pos) {
+        return packBigNumberBytes(bufferUntilNull(bytes, pos));
+    }
+
+    public static String packStringBytes(List<Byte> bytes, int pos) {
+        return packStringBytes(bufferUntilNull(bytes, pos));
+    }
+
+    public static List<Byte> bufferUntilNull(List<Byte> bytes, int pos) {
+        List<Byte> buffer = new Vector<>(10, 10);
+
+        while (bytes.get(pos) != TileBytes.NULL_TERMINATOR) {
+            buffer.add(bytes.get(pos));
+            pos += 1;
+        }
+
+        return buffer;
+    }
+
     // You know... I fucking hate the "every number is signed" bullshit in Java
     public static String toPrettyString(List<Byte> list) {
         StringBuilder strBuilder = new StringBuilder();
@@ -74,6 +138,13 @@ public class ByteUtil {
         return strBuilder.toString();
     }
 
+    /**
+     * Trims unused(zero) leading bytes
+     *
+     * @param bytes the byte list
+     * @return trimmed byte list
+     */
+
     public static List<Byte> trimBytes(List<Byte> bytes) {
         List<Byte> trimmed = new ArrayList<>(bytes.size());
 
@@ -87,5 +158,4 @@ public class ByteUtil {
 
         return trimmed;
     }
-
 }
