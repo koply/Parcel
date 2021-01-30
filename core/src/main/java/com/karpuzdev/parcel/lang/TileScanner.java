@@ -53,6 +53,18 @@ final class TileScanner {
         }
     }
 
+    static boolean execute(EventIdentifier identifier) {
+        List<EventPosition> positions = eventMap.get(identifier);
+
+        if (positions == null) return false;
+
+        for (EventPosition pos : positions) {
+            TileExecutor.execute(pos.file.getName(), TileLoader.read(pos.file), pos.position);
+        }
+
+        return true;
+    }
+
     static void debug() {
         for (var entry : eventMap.entrySet()) {
             System.out.println(entry.getKey() + " - " + entry.getValue());

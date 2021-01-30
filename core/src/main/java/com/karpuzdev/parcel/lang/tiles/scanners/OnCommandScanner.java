@@ -24,6 +24,7 @@ public final class OnCommandScanner extends ByteScanner {
         List<Byte> lineBytes = ByteUtil.bufferUntilNull(info.bytes, pos);
         long _lineNumber = ByteUtil.packNumberBytes(lineBytes);
 
+        // +1 because of the null byte
         pos += lineBytes.size()+1;
 
         // Block end parameter

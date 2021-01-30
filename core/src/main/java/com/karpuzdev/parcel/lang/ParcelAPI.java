@@ -2,7 +2,10 @@ package com.karpuzdev.parcel.lang;
 
 import com.karpuzdev.parcel.lang.expressions.OnCommandExpression;
 import com.karpuzdev.parcel.lang.expressions.RespondTextExpression;
+import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
+import com.karpuzdev.parcel.lang.tiles.executors.RespondTextExecutor;
+import com.karpuzdev.parcel.lang.tiles.executors.ReturnExecutor;
 import com.karpuzdev.parcel.lang.tiles.scanners.OnCommandScanner;
 import com.karpuzdev.parcel.lang.util.ByteUtil;
 
@@ -18,6 +21,9 @@ public final class ParcelAPI {
         ExpressionMatcher.registerExpression(new RespondTextExpression());
 
         TileScanner.registerScanner(new OnCommandScanner());
+
+        TileExecutor.registerExecutor(new RespondTextExecutor());
+        TileExecutor.registerExecutor(new ReturnExecutor());
     }
 
     /*  Static build method to launch the core  */
@@ -45,6 +51,10 @@ public final class ParcelAPI {
 
     public static void loadTile(File file) {
         TileLoader.load(file);
+    }
+
+    public static void executeEvent(EventIdentifier identifier) {
+        TileExecutor.execute(identifier);
     }
 
     public static void debugTile(File file) {

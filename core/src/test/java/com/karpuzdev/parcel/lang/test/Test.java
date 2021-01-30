@@ -1,6 +1,8 @@
 package com.karpuzdev.parcel.lang.test;
 
 import com.karpuzdev.parcel.lang.ParcelAPI;
+import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
+import com.karpuzdev.parcel.lang.tiles.TileBytes;
 
 import java.io.File;
 
@@ -27,7 +29,15 @@ public class Test {
 //        ParcelAPI.compileCodeToFile(code, outputFolder);
 
         File tile = new File(outputFolder, "test.tile");
-        ParcelAPI.debugTile(tile);
+        ParcelAPI.loadTile(tile);
+
+        long last = System.currentTimeMillis();
+
+        for (int i = 0; i < 20000; i++) {
+            ParcelAPI.executeEvent(new EventIdentifier(TileBytes.COMMAND_EVENT, "ping"));
+        }
+
+        System.out.println("\nTime: " + ((double) System.currentTimeMillis() - last) + " ms");
     }
 
 }

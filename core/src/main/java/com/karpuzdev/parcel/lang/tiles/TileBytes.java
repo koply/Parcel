@@ -76,12 +76,11 @@ public final class TileBytes {
     public static final short ELSE_CONDITION = 0x0020;
 
     /**
-     * Sends a text message to a channel. The channel can be given as the
-     * name, which is a string or the id, which is a number.
+     * Sends a text message to a channel.
      *
      * @type Action
      * @parameter String - Message text
-     * @parameter String(name) | Number(id) - Channel identifier
+     * @parameter Number(id) - Channel identifier
      */
     public static final short SENDTEXT_ACTION = 0x0100;
 
@@ -89,7 +88,7 @@ public final class TileBytes {
      * Responds to a text message. This action is actually a short-circuit for
      * the SendText action. The channel parameter will be given as channel.id automatically.
      *
-     * Any SendText that takes channel.name or channel.id property might be optimized to RespondText
+     * Any SendText that takes channel.id property might be optimized to RespondText
      *
      * @type Action
      * @parameter String - Message text
