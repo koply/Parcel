@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * General parcel compiling manager
+ */
 final class ParcelCompiler {
 
     private ParcelCompiler() { }
@@ -66,7 +69,7 @@ final class ParcelCompiler {
         // First 3 bytes are KMN bytes
         bytes.addAll(ByteUtil.splitTrim(TileBytes.TILE_HEADER));
         // The 4th byte is the version specifier
-        bytes.add((byte) 0x00);
+        bytes.add(TileBytes.TILE_VERSION);
 
         Stack<Integer> blockEndSpecifiers = new Stack<>();
         Stack<List<Byte>> trailerBytesStack = new Stack<>();

@@ -4,6 +4,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/*
+TODO: Might need to add multiple byte-buffer support
+ */
 public final class FileUtil {
 
     private FileUtil() { }

@@ -2,11 +2,14 @@ package com.karpuzdev.parcel.lang.tiles;
 
 import com.karpuzdev.parcel.lang.helpers.Flags;
 
+/**
+ * Holds state for the current execution flow
+ */
 public final class ExecutionState {
 
     public static final int ELSE_FLAG_MASK = 1;
 
-    private Flags flags = new Flags();
+    private final Flags flags = new Flags();
     private long counterRegister = 0;
 
     public boolean checkElseFlag() {

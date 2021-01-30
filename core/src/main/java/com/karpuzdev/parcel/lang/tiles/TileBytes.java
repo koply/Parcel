@@ -9,6 +9,15 @@ public final class TileBytes {
     public static final int TILE_HEADER = ('K' << 16) | ('M' << 8) | ('N');
 
     /**
+     * Tile version identifier
+     * Versions may have different identifier-sets so this is
+     * here for backwards-compatiblity
+     *
+     * Current version: 0 (Building)
+     */
+    public static final byte TILE_VERSION = 0x00;
+
+    /**
      * Variable-length parameters have to end with a null terminator. When
      * a variable-length block starts, nothing will be counted towards execution until
      * the null terminator is encountered.

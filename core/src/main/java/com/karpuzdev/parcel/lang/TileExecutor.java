@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * General tile execution manager
+ */
 final class TileExecutor {
 
     private static final Map<Short, ByteExecutor> executorMap = new HashMap<>();

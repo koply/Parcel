@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class is used to identify events with their
+ * identifiers and the arguments they take to speed up finding which
+ * event to execute.
+ */
 public final class EventIdentifier {
 
     private final short eventId;

@@ -4,6 +4,11 @@ import com.karpuzdev.parcel.lang.tiles.ExecutionState;
 
 import java.util.List;
 
+/**
+ * Given to executors to specify the file name for exceptions,
+ * the bytes of the file, where to start the execution and the
+ * current execution state.
+ */
 public final class ExecutionInfo {
 
     public final String fileName;

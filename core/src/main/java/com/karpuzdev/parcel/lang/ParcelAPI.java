@@ -1,7 +1,7 @@
 package com.karpuzdev.parcel.lang;
 
-import com.karpuzdev.parcel.lang.expressions.OnCommandExpression;
-import com.karpuzdev.parcel.lang.expressions.RespondTextExpression;
+import com.karpuzdev.parcel.lang.compilers.OnCommandCompiler;
+import com.karpuzdev.parcel.lang.compilers.RespondTextCompiler;
 import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
 import com.karpuzdev.parcel.lang.tiles.executors.RespondTextExecutor;
@@ -14,11 +14,16 @@ import java.util.List;
 
 // user-written files are "parcel"s
 // compiled pieces are "tile"s
+
+/**
+ * Everything starts here...
+ */
 public final class ParcelAPI {
 
+    // TODO: Maybe make the registering automatic
     static {
-        ExpressionMatcher.registerExpression(new OnCommandExpression());
-        ExpressionMatcher.registerExpression(new RespondTextExpression());
+        ExpressionMatcher.registerExpression(new OnCommandCompiler());
+        ExpressionMatcher.registerExpression(new RespondTextCompiler());
 
         TileScanner.registerScanner(new OnCommandScanner());
 
@@ -37,6 +42,7 @@ public final class ParcelAPI {
         File[] parcels = source.getParcels();
 
         ParcelCompiler.compileAll(parcels, outputFolder);
+        TileLoader.loadAll(outputFolder.listFiles(), true);
     }
 
     public static String compileCodeToString(String code) {

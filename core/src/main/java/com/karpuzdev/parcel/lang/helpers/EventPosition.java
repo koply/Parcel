@@ -2,6 +2,10 @@ package com.karpuzdev.parcel.lang.helpers;
 
 import java.io.File;
 
+/**
+ * TileScanner uses this class to hold the
+ * event entry-points
+ */
 public final class EventPosition {
 
     public final File file;

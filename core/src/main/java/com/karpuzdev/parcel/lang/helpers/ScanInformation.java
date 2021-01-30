@@ -2,6 +2,10 @@ package com.karpuzdev.parcel.lang.helpers;
 
 import java.util.List;
 
+/**
+ * Given to scanners to specify bytes and where
+ * to start reading
+ */
 public final class ScanInformation {
 
     public final List<Byte> bytes;

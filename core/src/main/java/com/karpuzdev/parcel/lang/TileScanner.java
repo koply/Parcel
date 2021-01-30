@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * General tile scanning manager
+ */
 final class TileScanner {
 
     private static final Map<EventIdentifier, List<EventPosition>> eventMap = new HashMap<>();
@@ -26,6 +29,11 @@ final class TileScanner {
 
     static void scanFile(File file) {
         List<Byte> bytes = TileLoader.read(file);
+        if (bytes == null) {
+            // Tile might be unloaded
+            // TODO: Maybe throw an exception?
+            return;
+        }
 
         // First 4 bytes are the header
         int pos = 4;
@@ -59,7 +67,13 @@ final class TileScanner {
         if (positions == null) return false;
 
         for (EventPosition pos : positions) {
-            TileExecutor.execute(pos.file.getName(), TileLoader.read(pos.file), pos.position);
+            List<Byte> bytes = TileLoader.read(pos.file);
+            if (bytes == null) {
+                // Tile might be unloaded
+                continue;
+            }
+
+            TileExecutor.execute(pos.file.getName(), bytes, pos.position);
         }
 
         return true;

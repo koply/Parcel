@@ -1,4 +1,4 @@
-package com.karpuzdev.parcel.lang.expressions;
+package com.karpuzdev.parcel.lang.compilers;
 
 import com.karpuzdev.parcel.lang.helpers.CompileInformation;
 import com.karpuzdev.parcel.lang.helpers.CompileResult;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public final class OnCommandExpression extends TileExpression {
+public final class OnCommandCompiler extends TileCompiler {
 
     @Override
     public List<String> getMatchers() {

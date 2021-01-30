@@ -9,22 +9,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * General tile loading manager
+ */
 final class TileLoader {
 
     private static final Map<File, List<Byte>> contentCache = new HashMap<>();
 
     // TODO: Linking
-    static void loadAll(File[] files) {
+    static void loadAll(File[] files, boolean skipInvalid) {
         for (File file : files) {
-            load(file);
+            load(file, skipInvalid);
         }
     }
 
     static void load(File file) {
-        if (file.isDirectory() || file.isHidden()) throw new IllegalArgumentException("Tiles have to be non-hidden files.");
+        load(file, false);
+    }
+
+    static void load(File file, boolean skipInvalid) {
+        if (file.isDirectory() || file.isHidden()) {
+            if (!skipInvalid) throw new IllegalArgumentException("Tiles have to be non-hidden files.");
+        }
 
         // files should be like "hello.tile" (with .tile extension)
-        if (!FileUtil.getFileExtension(file).equals("tile")) throw new IllegalArgumentException("Tiles have to have .tile extension.");
+        if (!FileUtil.getFileExtension(file).equals("tile")) {
+            if (!skipInvalid) throw new IllegalArgumentException("Tiles have to have .tile extension.");
+        }
 
         byte[] content = FileUtil.readFileBytes(file);
 
@@ -43,6 +54,11 @@ final class TileLoader {
         contentCache.put(file, bytes);
 
         TileScanner.scanFile(file);
+    }
+
+    // TODO: Unlink if needed
+    static void unloadFile(File file) {
+        contentCache.remove(file);
     }
 
     static List<Byte> read(File file) {

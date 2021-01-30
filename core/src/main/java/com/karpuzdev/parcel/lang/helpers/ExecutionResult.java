@@ -1,5 +1,9 @@
 package com.karpuzdev.parcel.lang.helpers;
 
+/**
+ * Executors return this to specify where to continue
+ * and if the execution should stop here (used for return action)
+ */
 public final class ExecutionResult {
 
     public final boolean shouldStop;

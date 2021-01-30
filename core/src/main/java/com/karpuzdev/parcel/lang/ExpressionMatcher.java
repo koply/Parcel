@@ -1,6 +1,6 @@
 package com.karpuzdev.parcel.lang;
 
-import com.karpuzdev.parcel.lang.expressions.TileExpression;
+import com.karpuzdev.parcel.lang.compilers.TileCompiler;
 import com.karpuzdev.parcel.lang.helpers.CompileInformation;
 import com.karpuzdev.parcel.lang.helpers.CompileResult;
 import com.karpuzdev.parcel.lang.helpers.MatchResult;
@@ -10,21 +10,25 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Finds the correct compiler from the given line. Finding
+ * is done by matching the regex patterns.
+ */
 final class ExpressionMatcher {
 
     private ExpressionMatcher() { }
 
     // Regex -> TileExpression
-    private static final Map<Pattern, TileExpression> matcher = new HashMap<>();
+    private static final Map<Pattern, TileCompiler> matcher = new HashMap<>();
 
-    static void registerExpression(TileExpression exp) {
+    static void registerExpression(TileCompiler exp) {
         for (String regex : exp.getMatchers()) {
             matcher.put(Pattern.compile(regex), exp);
         }
     }
 
     static MatchResult match(String line) {
-        for (Map.Entry<Pattern, TileExpression> entry : matcher.entrySet()) {
+        for (Map.Entry<Pattern, TileCompiler> entry : matcher.entrySet()) {
             Matcher matcher = entry.getKey().matcher(line);
             if (matcher.matches()) {
 

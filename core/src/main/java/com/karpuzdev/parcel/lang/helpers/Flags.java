@@ -1,5 +1,8 @@
 package com.karpuzdev.parcel.lang.helpers;
 
+/**
+ * Helper class to handle flags in a more readable way
+ */
 public final class Flags {
 
     private long flags = 0;
