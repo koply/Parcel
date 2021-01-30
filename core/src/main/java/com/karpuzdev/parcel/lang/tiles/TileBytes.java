@@ -32,7 +32,8 @@ public final class TileBytes {
      */
     public static final byte STRING_IDENTIFIER = 0x01;
     public static final byte NUMBER_IDENTIFIER = 0x02;
-    public static final byte PROPERTY_IDENTIFIER = 0x03;
+    public static final byte DECIMAL_IDENTIFIER = 0x03;
+    public static final byte PROPERTY_IDENTIFIER = 0x04;
 
     /**
      * This property will give the current channel name.

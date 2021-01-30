@@ -107,19 +107,11 @@ final class ParcelCompiler {
             if (tabCount < currentLevel) {
                 int shiftTabs = (currentLevel - tabCount);
 
-                while (shiftTabs > 0) {
-                    if (blockEndSpecifiers.empty() || trailerBytesStack.empty()) {
-                        throw new CompilationException(fileName, lineNumber, "A block ended without starting");
-                    }
-
-                    bytes.addAll(trailerBytesStack.pop());
-
-                    int pos = blockEndSpecifiers.pop();
-
-                    insertBlockEnd(bytes, pos);
-
-                    shiftTabs -= 1;
+                if (blockEndSpecifiers.empty() || trailerBytesStack.empty()) {
+                    throw new CompilationException(fileName, lineNumber, "A block ended without starting");
                 }
+
+                handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack, shiftTabs);
             }
 
             if (tabCount == currentLevel) {
@@ -146,33 +138,65 @@ final class ParcelCompiler {
             bytes.addAll(result.bytes);
         }
 
-        while (!trailerBytesStack.empty()) {
-            List<Byte> trailers = trailerBytesStack.pop();
-            bytes.addAll(trailers);
-        }
-
-        while (!blockEndSpecifiers.empty()) {
-            int pos = blockEndSpecifiers.pop();
-
-            insertBlockEnd(bytes, pos);
-        }
+        handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack);
 
         return bytes;
     }
 
-    private static void insertBlockEnd(List<Byte> bytes, int pos) {
-        int currentByteCount = ByteUtil.splitTrim(bytes.size()).size();
+    // I don't even know wtf is going on beyond this point
+    // I had to threaten my brain with a knife to come up with this
+    private static void handleBlockEnds(List<Byte> bytes, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack) {
+        handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack, -1);
+    }
+
+    private static void handleBlockEnds(List<Byte> bytes, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack, int shiftTabs) {
+        List<BlockEnd> ends = new ArrayList<>();
 
         while (true) {
-            List<Byte> newBytes = ByteUtil.splitTrim(bytes.size() + currentByteCount);
-            int newByteCount = newBytes.size();
-
-            if (currentByteCount == newByteCount) {
-                bytes.addAll(pos, newBytes);
+            if (shiftTabs == 0) {
                 break;
             }
 
-            currentByteCount = newByteCount;
+            if (shiftTabs > 0) {
+                shiftTabs -= 1;
+
+            } else if (trailerBytesStack.empty() || blockEndSpecifiers.empty()) {
+                // shiftTabs < 0 means don't check shiftTabs
+                break;
+            }
+
+            bytes.addAll(trailerBytesStack.pop());
+
+            int pos = blockEndSpecifiers.pop();
+
+            ends.add(new BlockEnd(pos, bytes.size()));
+        }
+
+        int lastAdd;
+        int add = 0;
+
+        do {
+            lastAdd = add;
+            add = 0;
+            for (BlockEnd blockEnd : ends) {
+                List<Byte> endBytes = ByteUtil.splitTrim(blockEnd.endPos + lastAdd);
+                add += endBytes.size();
+            }
+        } while (add != lastAdd);
+
+        for (BlockEnd blockEnd : ends) {
+            List<Byte> endBytes = ByteUtil.splitTrim(blockEnd.endPos + lastAdd);
+            bytes.addAll(blockEnd.specPos, endBytes);
+        }
+    }
+
+    private static final class BlockEnd {
+        public final int specPos;
+        public final int endPos;
+
+        public BlockEnd(int specPos, int endPos) {
+            this.specPos = specPos;
+            this.endPos = endPos;
         }
     }
 

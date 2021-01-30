@@ -16,6 +16,7 @@ public final class RespondTextExecutor extends ByteExecutor {
 
     @Override
     public ExecutionResult execute(ExecutionInfo info) {
+        info.state.clearElseFlag();
 
         // First 2 bytes are identifier bytes
         int pos = info.position + 2;
@@ -34,6 +35,7 @@ public final class RespondTextExecutor extends ByteExecutor {
         pos += textBytes.size()+1;
 
         // Execution
+        // TODO: Actual respond with text action
         System.out.println("Responding Text: " + text);
 
         // End

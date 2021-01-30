@@ -48,6 +48,10 @@ public class ByteUtil {
         return list;
     }
 
+    public static List<Byte> split(double arg) {
+        return split(Double.doubleToRawLongBits(arg));
+    }
+
     public static List<Byte> splitTrim(long arg) {
         return trimBytes(split(arg));
     }
@@ -58,6 +62,16 @@ public class ByteUtil {
 
     public static List<Byte> splitTrim(short arg) {
         return trimBytes(split(arg));
+    }
+
+    public static long packDecimalBytes(List<Byte> bytes) {
+        long packed = 0;
+
+        for (byte b : bytes) {
+            packed = (packed << 8) | b;
+        }
+
+        return packed;
     }
 
     public static long packNumberBytes(List<Byte> bytes) {
