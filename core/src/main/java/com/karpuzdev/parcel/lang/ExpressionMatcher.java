@@ -21,7 +21,7 @@ final class ExpressionMatcher {
     // Regex -> TileExpression
     private static final Map<Pattern, TileCompiler> matcher = new HashMap<>();
 
-    static void registerExpression(TileCompiler exp) {
+    static void registerCompiler(TileCompiler exp) {
         for (String regex : exp.getMatchers()) {
             matcher.put(Pattern.compile(regex), exp);
         }

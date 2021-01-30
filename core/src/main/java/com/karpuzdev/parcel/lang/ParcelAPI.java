@@ -2,6 +2,7 @@ package com.karpuzdev.parcel.lang;
 
 import com.karpuzdev.parcel.lang.compilers.OnCommandCompiler;
 import com.karpuzdev.parcel.lang.compilers.RespondTextCompiler;
+import com.karpuzdev.parcel.lang.compilers.ReturnCompiler;
 import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
 import com.karpuzdev.parcel.lang.tiles.executors.RespondTextExecutor;
@@ -22,8 +23,9 @@ public final class ParcelAPI {
 
     // TODO: Maybe make the registering automatic
     static {
-        ExpressionMatcher.registerExpression(new OnCommandCompiler());
-        ExpressionMatcher.registerExpression(new RespondTextCompiler());
+        ExpressionMatcher.registerCompiler(new OnCommandCompiler());
+        ExpressionMatcher.registerCompiler(new RespondTextCompiler());
+        ExpressionMatcher.registerCompiler(new ReturnCompiler());
 
         TileScanner.registerScanner(new OnCommandScanner());
 

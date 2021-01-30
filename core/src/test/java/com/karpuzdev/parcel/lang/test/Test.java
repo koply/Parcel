@@ -1,8 +1,6 @@
 package com.karpuzdev.parcel.lang.test;
 
 import com.karpuzdev.parcel.lang.ParcelAPI;
-import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
-import com.karpuzdev.parcel.lang.tiles.TileBytes;
 
 import java.io.File;
 
@@ -33,8 +31,11 @@ public class Test {
 
         long last = System.currentTimeMillis();
 
-        for (int i = 0; i < 20000; i++) {
-            ParcelAPI.executeEvent(new EventIdentifier(TileBytes.COMMAND_EVENT, "ping"));
+//        for (int i = 0; i < 47500; i++) {
+//            ParcelAPI.executeEvent(new EventIdentifier(TileBytes.COMMAND_EVENT, "ping"));
+//        }
+        for (int i = 0; i < 35000; i++) {
+            ParcelAPI.compileCodeToString(code);
         }
 
         System.out.println("\nTime: " + ((double) System.currentTimeMillis() - last) + " ms");
