@@ -1,8 +1,8 @@
 package com.karpuzdev.parcel.main;
 
 import com.karpuzdev.parcel.lang.ParcelAPI;
-import com.karpuzdev.parcel.main.commands.HelpCommand;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
+import com.karpuzdev.parcel.main.commands.HelpCommand;
 import me.koply.kcommando.CommandToRun;
 import me.koply.kcommando.KCommando;
 import me.koply.kcommando.integration.impl.jda.JDAIntegration;
@@ -21,7 +21,7 @@ public class Main extends JDAIntegration implements IParcelSource {
 
     public Main(JDA jda) {
         super(jda);
-        ParcelAPI.build(this);
+        ParcelAPI.build(this, new File("out/"));
     }
 
     @Override

@@ -82,7 +82,8 @@ public class ByteUtil {
         long packed = 0;
 
         for (byte b : bytes) {
-            packed = (packed << 8) | b;
+            short temp = (short) (0x0000 | b);
+            packed = (packed << 8) | (temp & 0xff);
         }
 
         return packed;

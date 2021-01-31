@@ -144,9 +144,12 @@ final class ParcelCompiler {
 
                 blockEndSpecifiers.push(blockEnd);
 
+                int trailerBlockEnd = bytes.size() + result.trailerBlockEnd;
+                if (result.trailerBlockEnd == -1) trailerBlockEnd = -1;
+
                 trailerBytesStack.push(result.trailerBytes);
                 trailerEndOffsets.push(result.trailerBlockEndOffset);
-                trailerEndPositions.push(bytes.size() + result.trailerBlockEnd);
+                trailerEndPositions.push(trailerBlockEnd);
             }
 
             bytes.addAll(result.bytes);
@@ -183,10 +186,10 @@ final class ParcelCompiler {
             }
 
             int trailerSpec = trailerEndOffsets.pop();
+            int trailerEnd = trailerEnds.pop();
 
             if (trailerSpec != -1) {
-                int trailerEnd = trailerEnds.pop();
-                blockEnds.put(bytes.size() + trailerSpec, trailerEnd-1);
+                blockEnds.put(bytes.size() + trailerSpec, trailerEnd);
             }
 
             List<Byte> trailerBytes = trailerBytesStack.pop();
@@ -203,8 +206,8 @@ final class ParcelCompiler {
         Map<BlockKey, BlockEnd> map = new HashMap<>();
 
         for (var entry : blockEnds.entrySet()) {
-            List<Byte> endBytes = ByteUtil.splitTrim(entry.getValue()+1);
-            map.put(new BlockKey(entry.getKey()), new BlockEnd(entry.getValue()+1, endBytes));
+            List<Byte> endBytes = ByteUtil.splitTrim(entry.getValue());
+            map.put(new BlockKey(entry.getKey()), new BlockEnd(entry.getValue(), endBytes));
         }
 
         Map<Integer, Integer> prevAdd = new HashMap<>();
@@ -215,7 +218,7 @@ final class ParcelCompiler {
         do {
             for (var entry1 : map.entrySet()) {
                 for (var entry2 : map.entrySet()) {
-                    if (entry1.equals(entry2)) continue;
+//                    if (entry1.equals(entry2)) continue;
 
                     // Placing our specifier bytes will change entry2's ending
                     if (entry1.getKey().currentSpec < entry2.getValue().endPos) {

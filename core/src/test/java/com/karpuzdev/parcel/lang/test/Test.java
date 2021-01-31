@@ -11,9 +11,13 @@ public class Test {
     public static void main(String[] args) {
         String code =
                     "on command \"ping\"\n" +
-                    "\tif \"tes\" equals \"test\"\n" +
+                    "\tif \"test\" equals \"test\"\n" +
                     "\t\tloop 5 times\n" +
-                    "\t\t\trespond with text \"Looping!\"\n" +
+                    "\t\t\tif 5 is 5\n" +
+                    "\t\t\t\tif 6 is 6\n" +
+                    "\t\t\t\t\trespond with text \"Looping!\"\n" +
+                    "\t\t\t\telse\n" +
+                    "\t\t\t\t\trespond with text \"idk wtf is going on\"\n" +
                     "\telse\n" +
                     "\t\trespond with text \"Pong!\"\n" +
                     "on command \"help\"\n" +
