@@ -31,6 +31,12 @@ public final class EqualsExecutor extends ByteExecutor {
 
         pos += blockEndBytes.size()+1;
 
+        // Tab count parameter
+        List<Byte> tabCountBytes = ByteUtil.bufferUntilNull(info.bytes, pos);
+        long tabCount = ByteUtil.packNumberBytes(tabCountBytes);
+
+        pos += tabCountBytes.size()+1;
+
         ExpressionPosition expPos = new ExpressionPosition(info.fileName, lineNumber);
 
         // First parameter
@@ -52,14 +58,14 @@ public final class EqualsExecutor extends ByteExecutor {
 
         // Check fails
         if (param1.type != param2.type) {
-            info.state.setElseFlag();
+            info.state.setElseFlag((int) tabCount);
             return new ExecutionResult((int)blockEnd);
         }
 
         // Check fails
         if (param1.type == ParameterType.STRING) {
             if (!param1.stringParam.equals(param2.stringParam)) {
-                info.state.setElseFlag();
+                info.state.setElseFlag((int) tabCount);
                 return new ExecutionResult((int)blockEnd);
             }
         }
@@ -67,7 +73,7 @@ public final class EqualsExecutor extends ByteExecutor {
         // Check fails
         if (param1.type == ParameterType.NUMBER) {
             if (param1.numberParam != param2.numberParam) {
-                info.state.setElseFlag();
+                info.state.setElseFlag((int) tabCount);
                 return new ExecutionResult((int)blockEnd);
             }
         }
@@ -75,7 +81,7 @@ public final class EqualsExecutor extends ByteExecutor {
         // Check fails
         if (param1.type == ParameterType.DECIMAL) {
             if (param1.decimalParam != param2.decimalParam) {
-                info.state.setElseFlag();
+                info.state.setElseFlag((int) tabCount);
                 return new ExecutionResult((int)blockEnd);
             }
         }

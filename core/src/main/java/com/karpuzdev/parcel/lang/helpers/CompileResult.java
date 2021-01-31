@@ -18,12 +18,25 @@ public final class CompileResult {
 
     public final int blockEndSpecifierPosition;
     public final List<Byte> bytes;
-    public final List<Byte> trailerBytes;
 
-    public CompileResult(int blockEndSpecifierPosition, List<Byte> bytes, List<Byte> trailerBytes) {
+    public final List<Byte> trailerBytes;
+    public final int trailerBlockEndOffset;
+    public final int trailerBlockEnd;
+
+    public CompileResult(int blockEndSpecifierPosition, List<Byte> bytes, List<Byte> trailerBytes, int trailerBlockEndOffset, int trailerBlockEnd) {
         this.blockEndSpecifierPosition = blockEndSpecifierPosition;
         this.bytes = bytes;
         this.trailerBytes = trailerBytes;
+        this.trailerBlockEndOffset = trailerBlockEndOffset;
+        this.trailerBlockEnd = trailerBlockEnd;
+    }
+
+    public CompileResult(List<Byte> bytes, List<Byte> trailerBytes, int trailerBlockEndOffset, int trailerBlockEnd) {
+        this(-1, bytes, trailerBytes, trailerBlockEndOffset, trailerBlockEnd);
+    }
+
+    public CompileResult(int blockEndSpecifierPosition, List<Byte> bytes, List<Byte> trailerBytes) {
+        this(blockEndSpecifierPosition, bytes, trailerBytes, -1, -1);
     }
 
     public CompileResult(int blockEndSpecifierPosition, List<Byte> bytes) {
@@ -31,7 +44,7 @@ public final class CompileResult {
     }
 
     public CompileResult(List<Byte> bytes) {
-        this(0, bytes);
+        this(-1, bytes);
     }
 
     public static CompileResult emptyTrailer(int blockEndSpecifierPosition, List<Byte> bytes) {

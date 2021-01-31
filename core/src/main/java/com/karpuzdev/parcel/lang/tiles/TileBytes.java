@@ -86,6 +86,14 @@ public final class TileBytes {
     public static final short ELSE_CONDITION = 0x0020;
 
     /**
+     * Checks the counter and jumps to the given byte if not zero. Also
+     * decrements the counter.
+     *
+     * @type Condition
+     */
+    public static final short JUMPCOUNTER_CONDITION = 0x0030;
+
+    /**
      * Sends a text message to a channel.
      *
      * @type Action
@@ -105,11 +113,18 @@ public final class TileBytes {
      */
     public static final short RESPONDTEXT_ACTION = 0x0200;
 
-
     /**
      * This action stops the current code execution.
      * Return is always added at the end of events and functions to end the block.
      */
     public static final short RETURN_ACTION = 0x0300;
+
+    /**
+     * Sets the counter to the given number
+     *
+     * @type Action
+     * @parameter Number - Counter
+     */
+    public static final short SETCOUNTER_ACTION = 0x0400;
 
 }

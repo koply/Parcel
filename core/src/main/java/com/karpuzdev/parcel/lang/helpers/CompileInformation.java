@@ -12,10 +12,12 @@ public final class CompileInformation {
     public final String line;
     public final int lineNumber;
     public final int currentPos;
+    public final int tabCount;
 
-    public CompileInformation(String line, int lineNumber, int currentPos) {
+    public CompileInformation(String line, int lineNumber, int currentPos, int tabCount) {
         this.line = line;
         this.lineNumber = lineNumber;
         this.currentPos = currentPos;
+        this.tabCount = tabCount;
     }
 }

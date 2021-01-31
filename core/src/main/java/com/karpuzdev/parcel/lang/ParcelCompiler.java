@@ -73,6 +73,8 @@ final class ParcelCompiler {
 
         Stack<Integer> blockEndSpecifiers = new Stack<>();
         Stack<List<Byte>> trailerBytesStack = new Stack<>();
+        Stack<Integer> trailerEndOffsets = new Stack<>();
+        Stack<Integer> trailerEndPositions = new Stack<>();
 
         Map<Integer, Integer> blockEnds = new HashMap<>();
 
@@ -113,7 +115,7 @@ final class ParcelCompiler {
                     throw new CompilationException(fileName, lineNumber, "A block ended without starting");
                 }
 
-                saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, shiftTabs);
+                saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, trailerEndOffsets, trailerEndPositions, shiftTabs);
 
                 if (tabCount == 0) {
                     insertBlockEnds(bytes, blockEnds);
@@ -126,25 +128,31 @@ final class ParcelCompiler {
                 currentLevel = tabCount;
             }
 
-            CompileInformation info = new CompileInformation(line.trim(), lineNumber, bytes.size());
+            CompileInformation info = new CompileInformation(line.trim(), lineNumber, bytes.size(), tabCount);
             CompileResult result = ExpressionMatcher.compile(info);
             if (result == null) {
                 throw new CompilationException(fileName, lineNumber, "Could not understand expression");
             }
 
             int specifierPos = result.blockEndSpecifierPosition;
-            if (specifierPos != 0) {
-                blockEndSpecifiers.push(bytes.size() + specifierPos);
+            if (specifierPos != -1) {
             }
 
             if (result.trailerBytes != null) {
+                int blockEnd = bytes.size() + specifierPos;
+                if (specifierPos == -1) blockEnd = -1;
+
+                blockEndSpecifiers.push(blockEnd);
+
                 trailerBytesStack.push(result.trailerBytes);
+                trailerEndOffsets.push(result.trailerBlockEndOffset);
+                trailerEndPositions.push(bytes.size() + result.trailerBlockEnd);
             }
 
             bytes.addAll(result.bytes);
         }
 
-        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack);
+        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, trailerEndOffsets, trailerEndPositions);
         insertBlockEnds(bytes, blockEnds);
 
         return bytes;
@@ -152,11 +160,15 @@ final class ParcelCompiler {
 
     // I don't even know wtf is going on beyond this point
     // I had to threaten my brain with a knife to come up with this
-    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack) {
-        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, -1);
+    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds,
+                                      Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack,
+                                      Stack<Integer> trailerEndOffsets, Stack<Integer> trailerEnds) {
+        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, trailerEndOffsets, trailerEnds, -1);
     }
 
-    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack, int shiftTabs) {
+    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds,
+                                      Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack,
+                                      Stack<Integer> trailerEndOffsets, Stack<Integer> trailerEnds, int shiftTabs) {
         while (true) {
             if (shiftTabs == 0) {
                 break;
@@ -170,11 +182,20 @@ final class ParcelCompiler {
                 break;
             }
 
-            bytes.addAll(trailerBytesStack.pop());
+            int trailerSpec = trailerEndOffsets.pop();
+
+            if (trailerSpec != -1) {
+                int trailerEnd = trailerEnds.pop();
+                blockEnds.put(bytes.size() + trailerSpec, trailerEnd-1);
+            }
+
+            List<Byte> trailerBytes = trailerBytesStack.pop();
+
+            bytes.addAll(trailerBytes);
 
             int pos = blockEndSpecifiers.pop();
 
-            blockEnds.put(pos, bytes.size());
+            if (pos != -1) blockEnds.put(pos, bytes.size());
         }
     }
 
@@ -239,7 +260,9 @@ final class ParcelCompiler {
 
         for (int i = 0; i < sortedSpecPositions.size(); i++) {
             BlockKey key = sortedSpecPositions.get(i);
+
             blockEnds.remove(key.firstSpec);
+
             List<Byte> endBytes = ByteUtil.splitTrim(map.get(key).endPos);
             bytes.addAll(key.currentSpec, endBytes);
         }

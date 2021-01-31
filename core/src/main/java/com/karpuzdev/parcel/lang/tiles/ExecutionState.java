@@ -11,21 +11,24 @@ public final class ExecutionState {
 
     private final Flags flags = new Flags();
     private long counterRegister = 0;
+    private int elseTabCount = 0;
 
-    public boolean checkElseFlag() {
-        return this.flags.isSet(ELSE_FLAG_MASK);
+    public boolean checkElseFlag(int tabCount) {
+        return this.flags.isSet(ELSE_FLAG_MASK) && this.elseTabCount == tabCount;
     }
 
-    public void setElseFlag() {
+    public void setElseFlag(int tabCount) {
         this.flags.set(ELSE_FLAG_MASK);
+        this.elseTabCount = tabCount;
     }
 
     public void clearElseFlag() {
         this.flags.clear(ELSE_FLAG_MASK);
+        this.elseTabCount = 0;
     }
 
     public void setCounter(long num) {
-        this.counterRegister = num;
+        this.counterRegister = num-1;
     }
 
     public void decrementCounter() {

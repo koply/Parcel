@@ -31,8 +31,15 @@ public final class ElseExecutor extends ByteExecutor {
 
         pos += blockEndBytes.size()+1;
 
+        // Tab count parameter
+        List<Byte> tabCountBytes = ByteUtil.bufferUntilNull(info.bytes, pos);
+        long tabCount = ByteUtil.packNumberBytes(tabCountBytes);
+
+        pos += tabCountBytes.size()+1;
+
         // Check fails
-        if (!info.state.checkElseFlag()) {
+        if (!info.state.checkElseFlag((int) tabCount)) {
+            info.state.clearElseFlag();
             return new ExecutionResult((int)blockEnd);
         }
 

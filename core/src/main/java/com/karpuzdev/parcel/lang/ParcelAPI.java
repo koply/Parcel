@@ -3,10 +3,7 @@ package com.karpuzdev.parcel.lang;
 import com.karpuzdev.parcel.lang.compilers.*;
 import com.karpuzdev.parcel.lang.helpers.EventIdentifier;
 import com.karpuzdev.parcel.lang.internal.IParcelSource;
-import com.karpuzdev.parcel.lang.tiles.executors.ElseExecutor;
-import com.karpuzdev.parcel.lang.tiles.executors.EqualsExecutor;
-import com.karpuzdev.parcel.lang.tiles.executors.RespondTextExecutor;
-import com.karpuzdev.parcel.lang.tiles.executors.ReturnExecutor;
+import com.karpuzdev.parcel.lang.tiles.executors.*;
 import com.karpuzdev.parcel.lang.tiles.scanners.OnCommandScanner;
 import com.karpuzdev.parcel.lang.util.ByteUtil;
 
@@ -28,6 +25,7 @@ public final class ParcelAPI {
         ExpressionMatcher.registerCompiler(new ReturnCompiler());
         ExpressionMatcher.registerCompiler(new EqualsCompiler());
         ExpressionMatcher.registerCompiler(new ElseCompiler());
+        ExpressionMatcher.registerCompiler(new LoopTimesCompiler());
 
         TileScanner.registerScanner(new OnCommandScanner());
 
@@ -35,6 +33,8 @@ public final class ParcelAPI {
         TileExecutor.registerExecutor(new ReturnExecutor());
         TileExecutor.registerExecutor(new EqualsExecutor());
         TileExecutor.registerExecutor(new ElseExecutor());
+        TileExecutor.registerExecutor(new SetCounterExecutor());
+        TileExecutor.registerExecutor(new JumpCounterExecutor());
     }
 
     /*  Static build method to launch the core  */

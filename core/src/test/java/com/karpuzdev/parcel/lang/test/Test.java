@@ -9,30 +9,15 @@ import java.io.File;
 public class Test {
 
     public static void main(String[] args) {
-//        String code = "on command \"ping\"\n" +
-//                "\tif channel.name is \"botkomut\"\n" +
-//                "\t\trespond with text \"Pong!\"\n" +
-//                "\telse:\n" +
-//                "\t\tsend text \"Got a Message!\" to channel \"botkomut\"";
         String code =
                     "on command \"ping\"\n" +
-                    "\tif \"test\" equals \"test\"\n" +
-                    "\t\tif 5.3 is 5.4\n" +
-                    "\t\t\trespond with text \"We are in if:if\"\n" +
-                    "\t\totherwise\n" +
-                    "\t\t\trespond with text \"Now in if:otherwise\"\n" +
+                    "\tif \"tes\" equals \"test\"\n" +
+                    "\t\tloop 5 times\n" +
+                    "\t\t\trespond with text \"Looping!\"\n" +
                     "\telse\n" +
                     "\t\trespond with text \"Pong!\"\n" +
                     "on command \"help\"\n" +
                     "\trespond with text \"Help!\"\n";
-//        String code =
-//                    "on command \"ping\"\n" +
-//                    "\tif \"tes\" equals \"test\"\n" +
-//                    "\t\trespond with text \"Pongo!\"\n" +
-//                    "\telse\n" +
-//                    "\t\trespond with text \"Pong!\"\n\n" +
-//                    "on command \"help\"\n" +
-//                    "\trespond with text \"Help!\"\n";
 
         System.out.println(code);
         System.out.println();

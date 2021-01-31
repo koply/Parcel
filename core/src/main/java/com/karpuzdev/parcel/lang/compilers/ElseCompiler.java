@@ -30,6 +30,10 @@ public final class ElseCompiler extends TileCompiler {
         int blockEndSpecifierPosition = bytes.size();
         bytes.add(TileBytes.NULL_TERMINATOR);
 
+        // Tab count specifier
+        bytes.addAll(ByteUtil.splitTrim(info.tabCount));
+        bytes.add(TileBytes.NULL_TERMINATOR);
+
         return CompileResult.emptyTrailer(blockEndSpecifierPosition, bytes);
     }
 }

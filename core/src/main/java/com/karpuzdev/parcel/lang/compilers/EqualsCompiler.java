@@ -31,6 +31,10 @@ public final class EqualsCompiler extends TileCompiler {
         int blockEndSpecifierPosition = bytes.size();
         bytes.add(TileBytes.NULL_TERMINATOR);
 
+        // Tab count specifier
+        bytes.addAll(ByteUtil.splitTrim(info.tabCount));
+        bytes.add(TileBytes.NULL_TERMINATOR);
+
         // First parameter
         TileCompiler.addParameterWithIdentifier(bytes, groups[0]);
 
