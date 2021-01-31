@@ -74,6 +74,8 @@ final class ParcelCompiler {
         Stack<Integer> blockEndSpecifiers = new Stack<>();
         Stack<List<Byte>> trailerBytesStack = new Stack<>();
 
+        Map<Integer, Integer> blockEnds = new HashMap<>();
+
         int currentLevel = 0;
         boolean levelComplete = false;
 
@@ -111,7 +113,11 @@ final class ParcelCompiler {
                     throw new CompilationException(fileName, lineNumber, "A block ended without starting");
                 }
 
-                handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack, shiftTabs);
+                saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, shiftTabs);
+
+                if (tabCount == 0) {
+                    insertBlockEnds(bytes, blockEnds);
+                }
             }
 
             if (tabCount == currentLevel) {
@@ -138,20 +144,19 @@ final class ParcelCompiler {
             bytes.addAll(result.bytes);
         }
 
-        handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack);
+        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack);
+        insertBlockEnds(bytes, blockEnds);
 
         return bytes;
     }
 
     // I don't even know wtf is going on beyond this point
     // I had to threaten my brain with a knife to come up with this
-    private static void handleBlockEnds(List<Byte> bytes, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack) {
-        handleBlockEnds(bytes, blockEndSpecifiers, trailerBytesStack, -1);
+    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack) {
+        saveBlockEnds(bytes, blockEnds, blockEndSpecifiers, trailerBytesStack, -1);
     }
 
-    private static void handleBlockEnds(List<Byte> bytes, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack, int shiftTabs) {
-        List<BlockEnd> ends = new ArrayList<>();
-
+    private static void saveBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds, Stack<Integer> blockEndSpecifiers, Stack<List<Byte>> trailerBytesStack, int shiftTabs) {
         while (true) {
             if (shiftTabs == 0) {
                 break;
@@ -169,35 +174,94 @@ final class ParcelCompiler {
 
             int pos = blockEndSpecifiers.pop();
 
-            ends.add(new BlockEnd(pos, bytes.size()));
+            blockEnds.put(pos, bytes.size());
+        }
+    }
+
+    private static void insertBlockEnds(List<Byte> bytes, Map<Integer, Integer> blockEnds) {
+        Map<BlockKey, BlockEnd> map = new HashMap<>();
+
+        for (var entry : blockEnds.entrySet()) {
+            List<Byte> endBytes = ByteUtil.splitTrim(entry.getValue()+1);
+            map.put(new BlockKey(entry.getKey()), new BlockEnd(entry.getValue()+1, endBytes));
         }
 
-        int lastAdd;
-        int add = 0;
+        Map<Integer, Integer> prevAdd = new HashMap<>();
+        Map<Integer, Integer> prevAddTemp = new HashMap<>();
+
+        boolean changed = false;
 
         do {
-            lastAdd = add;
-            add = 0;
-            for (BlockEnd blockEnd : ends) {
-                List<Byte> endBytes = ByteUtil.splitTrim(blockEnd.endPos + lastAdd);
-                add += endBytes.size();
-            }
-        } while (add != lastAdd);
+            for (var entry1 : map.entrySet()) {
+                for (var entry2 : map.entrySet()) {
+                    if (entry1.equals(entry2)) continue;
 
-        for (BlockEnd blockEnd : ends) {
-            List<Byte> endBytes = ByteUtil.splitTrim(blockEnd.endPos + lastAdd);
-            bytes.addAll(blockEnd.specPos, endBytes);
+                    // Placing our specifier bytes will change entry2's ending
+                    if (entry1.getKey().currentSpec < entry2.getValue().endPos) {
+                        List<Byte> endBytes = ByteUtil.splitTrim(entry1.getValue().endPos);
+
+                        entry2.getValue().endPos -= prevAdd.getOrDefault(entry1.getKey().currentSpec, 0);
+                        entry2.getValue().endPos += endBytes.size();
+
+                        if (entry1.getKey().currentSpec < entry2.getKey().currentSpec) {
+                            entry2.getKey().currentSpec -= prevAdd.getOrDefault(entry1.getKey().firstSpec, 0);
+                            entry2.getKey().currentSpec += endBytes.size();
+                        }
+
+                        prevAddTemp.put(entry1.getKey().firstSpec, endBytes.size());
+                        continue;
+                    }
+
+                    if (entry1.getKey().currentSpec < entry2.getKey().currentSpec) {
+                        List<Byte> endBytes = ByteUtil.splitTrim(entry1.getValue().endPos);
+
+                        entry2.getKey().currentSpec -= prevAdd.getOrDefault(entry1.getKey().firstSpec, 0);
+                        entry2.getKey().currentSpec += endBytes.size();
+
+                        prevAddTemp.put(entry1.getKey().firstSpec, endBytes.size());
+                    }
+                }
+            }
+
+            for (var entry : map.entrySet()) {
+                List<Byte> currentBytes = ByteUtil.splitTrim(entry.getValue().endPos);
+                if (entry.getValue().prevBytes.size() < currentBytes.size()) {
+                    changed = true;
+                    entry.getValue().prevBytes = currentBytes;
+                }
+            }
+            prevAdd = prevAddTemp;
+            prevAddTemp = new HashMap<>();
+        } while (changed);
+
+        List<BlockKey> sortedSpecPositions = new ArrayList<>(map.keySet());
+        sortedSpecPositions.sort(Comparator.comparingInt(n -> n.currentSpec));
+
+        for (int i = 0; i < sortedSpecPositions.size(); i++) {
+            BlockKey key = sortedSpecPositions.get(i);
+            blockEnds.remove(key.firstSpec);
+            List<Byte> endBytes = ByteUtil.splitTrim(map.get(key).endPos);
+            bytes.addAll(key.currentSpec, endBytes);
         }
     }
 
     private static final class BlockEnd {
-        public final int specPos;
-        public final int endPos;
+        public int endPos;
+        public List<Byte> prevBytes;
 
-        public BlockEnd(int specPos, int endPos) {
-            this.specPos = specPos;
+        public BlockEnd(int endPos, List<Byte> prevBytes) {
             this.endPos = endPos;
+            this.prevBytes = prevBytes;
         }
     }
 
+    private static final class BlockKey {
+        public int currentSpec;
+        public final int firstSpec;
+
+        public BlockKey(int firstSpec) {
+            this.currentSpec = firstSpec;
+            this.firstSpec = firstSpec;
+        }
+    }
 }

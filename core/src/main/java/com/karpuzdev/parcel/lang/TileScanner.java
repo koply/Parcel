@@ -38,7 +38,7 @@ final class TileScanner {
         // First 4 bytes are the header
         int pos = 4;
 
-        while (pos < bytes.size()) {
+        while (pos >= 0 && pos < bytes.size()) {
             short identifier = ByteUtil.packIdentifierBytes(bytes, pos);
             ByteScanner scanner = scannerMap.get(identifier);
 

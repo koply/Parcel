@@ -64,6 +64,10 @@ public class ByteUtil {
         return trimBytes(split(arg));
     }
 
+    public static List<Byte> splitTrim(double arg) {
+        return trimBytes(split(arg));
+    }
+
     public static long packDecimalBytes(List<Byte> bytes) {
         long packed = 0;
 

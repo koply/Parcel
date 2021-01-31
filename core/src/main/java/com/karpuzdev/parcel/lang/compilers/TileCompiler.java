@@ -31,7 +31,7 @@ public abstract class TileCompiler {
                 long number = Long.parseLong(group);
 
                 bytes.add(TileBytes.NUMBER_IDENTIFIER);
-                bytes.addAll(ByteUtil.split(number));
+                bytes.addAll(ByteUtil.splitTrim(number));
                 bytes.add(TileBytes.NULL_TERMINATOR);
             } catch (NumberFormatException ex) {
                 try {
@@ -39,7 +39,7 @@ public abstract class TileCompiler {
                     double number = Double.parseDouble(group);
 
                     bytes.add(TileBytes.DECIMAL_IDENTIFIER);
-                    bytes.addAll(ByteUtil.split(number));
+                    bytes.addAll(ByteUtil.splitTrim(number));
                     bytes.add(TileBytes.NULL_TERMINATOR);
                 } catch (NumberFormatException ex2) {
                     // Parameter has to be a property
