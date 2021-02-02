@@ -87,7 +87,6 @@ final class ParcelCompiler {
 
         for (String line : lines) {
             lineNumber++;
-
             if (line.trim().isEmpty() || line.trim().startsWith("#")) {
                 continue;
             }

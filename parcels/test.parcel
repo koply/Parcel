@@ -1,0 +1,12 @@
+on command "ping"
+    if "test" equals "test"
+        loop 10 times
+            if 5.3 is 5.3
+                if 6 is 6
+                    respond with text "Looping!"
+                else
+                    respond with text "idk wtf is going on"
+    else
+        respond with text "Pong!"
+on command "help"
+    respond with text "Help!"

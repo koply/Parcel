@@ -46,15 +46,12 @@ public class CommandHandlerWrapper extends CommandHandler<MessageReceivedEvent> 
         final String command = this.parameters.getCaseSensitivity().isPresent() ? cmdArgs[0] : cmdArgs[0].toLowerCase();
 
         if (!containsCommand(command)) { // native komut yok
-
-            boolean isTileExecuted = ParcelAPI.executeEvent(new EventIdentifier(TileBytes.COMMAND_EVENT, Arrays.asList(cmdArgs)));
-            if (!isTileExecuted) {
+            if (!runParcelCommand(cmdArgs)) {
                 if (this.parameters.getIntegration().getSuggestionsCallback() != null) {
                     findSimilars(command, params.getEvent());
                 }
             }
             return;
-
         }
 
         final CommandToRun<MessageReceivedEvent> ctr = parameters.getCommandMethods().get(command);
@@ -65,5 +62,12 @@ public class CommandHandlerWrapper extends CommandHandler<MessageReceivedEvent> 
         }
 
         this.runCommand(info, ctr, params, cmdArgs, prefix);
+    }
+
+    private boolean runParcelCommand(String[] args) {
+        long millis = System.currentTimeMillis();
+        boolean isTileExecuted = ParcelAPI.executeEvent(new EventIdentifier(TileBytes.COMMAND_EVENT, Arrays.asList(args)));
+        if (isTileExecuted) KCommando.logger.info("Last parcel took " + (System.currentTimeMillis() - millis) + "ms to execute.");
+        return isTileExecuted;
     }
 }

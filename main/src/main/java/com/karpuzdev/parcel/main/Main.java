@@ -24,12 +24,15 @@ public class Main extends JDAIntegration implements IParcelSource {
 
     public Main(JDA jda) {
         super(jda);
-        ParcelAPI.build(this, new File("out/"));
+        File out = new File("out/");
+        ParcelAPI.build(this, out);
     }
 
     @Override
     public File[] getParcels() {
-        return new File("parcels/").listFiles();
+        File parcelsFolder = new File("parcels/");
+        parcelsFolder.mkdir();
+        return parcelsFolder.listFiles();
     }
 
     private static final EmbedBuilder helpEmbed = new EmbedBuilder();

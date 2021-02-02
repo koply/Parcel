@@ -42,7 +42,8 @@ public final class ParcelAPI {
         if (source == null) throw new IllegalArgumentException("IParcelSource parameter cannot be null");
         if (source.getParcels() == null || source.getParcels().length == 0) throw new IllegalArgumentException("Parcels are empty");
 
-        if (outputFolder == null || !outputFolder.exists()) throw new IllegalArgumentException("Output folder could not be found");
+        if (outputFolder == null) throw new IllegalArgumentException("Output folder could not be found");
+        if (!outputFolder.exists()) outputFolder.mkdir();
         if (outputFolder.isFile()) throw new IllegalArgumentException("Output folder cannot be a file");
 
         File[] parcels = source.getParcels();

@@ -26,7 +26,7 @@ public final class FileUtil {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                code.append(line);
+                code.append(line).append("\n");
             }
 
             return code.toString();
