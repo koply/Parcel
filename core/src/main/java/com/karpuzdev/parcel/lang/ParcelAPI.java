@@ -65,8 +65,8 @@ public final class ParcelAPI {
         TileLoader.load(file);
     }
 
-    public static void executeEvent(EventIdentifier identifier) {
-        TileExecutor.execute(identifier);
+    public static boolean executeEvent(EventIdentifier identifier) {
+        return TileExecutor.execute(identifier);
     }
 
     public static void debugTile(File file) {

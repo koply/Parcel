@@ -23,9 +23,9 @@ final class TileExecutor {
         executorMap.put(executor.getIdentifier(), executor);
     }
 
-    static void execute(EventIdentifier identifier) {
+    static boolean execute(EventIdentifier identifier) {
         // Events are stored in the scanner
-        TileScanner.execute(identifier);
+        return TileScanner.execute(identifier);
     }
 
     static void execute(String fileName, List<Byte> bytes, int position) {
